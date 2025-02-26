@@ -6,8 +6,8 @@ import { NextResponse } from 'next/server';
 export async function POST(req) {
     try {
         const reqBody = await req.json();
-        const { name, email, password } = reqBody;
-        if (!name || !email || !password) {
+        const { firstName,lastName, email, password } = reqBody;
+        if (!firstName || !lastName|| !email || !password) {
             return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
         }
         await connectDB();
@@ -18,7 +18,8 @@ export async function POST(req) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = new User({
-            name,
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
         });
