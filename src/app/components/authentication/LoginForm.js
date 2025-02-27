@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -11,13 +10,17 @@ import {
   Alert,
   Link,
 } from "@mui/material";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 import { loginUser } from "@/apiServices";
 import { baseUrl, loginApi } from "@/apiEndPoints";
 
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().min(6,"password must be 6 characters").required("Password is required"),
+});
+
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
 
   const createMutation = useMutation({
@@ -26,20 +29,12 @@ const LoginForm = () => {
       router.push("/dashboard");
     },
     onError: (err) => {
-      setError(err.message || "Something went wrong");
+      console.error(err);
     },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    createMutation.mutate({ email, password });
+  const handleSubmit = (values) => {
+    createMutation.mutate(values);
   };
 
   return (
@@ -56,48 +51,61 @@ const LoginForm = () => {
         <Typography variant="h4" gutterBottom textAlign="center">
           Login
         </Typography>
-        {error && <Alert severity="error">{error}</Alert>}
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-            disabled={createMutation.isLoading}
-          >
-            {createMutation.isLoading ? "Logging in..." : "Login"}
-          </Button>
-          <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
-            Don't have an account?{" "}
-            <Link
-              href="/signup"
-              underline="hover"
-              sx={{ cursor: "pointer", color: "blue" }}
-            >
-              Sign Up
-            </Link>
-          </Typography>
-        </form>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched, handleChange, handleBlur, values }) => (
+            <Form>
+              <TextField
+                label="Email"
+                name="email"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+              />
+              <TextField
+                label="Password"
+                name="password"
+                type="password"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.password && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+                disabled={createMutation.isLoading}
+              >
+                {createMutation.isLoading ? "Logging in..." : "Login"}
+              </Button>
+              <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
+                Don't have an account?{" "}
+                <Link
+                  href="/signup"
+                  underline="hover"
+                  sx={{ cursor: "pointer", color: "blue" }}
+                >
+                  Sign Up
+                </Link>
+              </Typography>
+            </Form>
+          )}
+        </Formik>
       </Box>
     </Container>
   );
