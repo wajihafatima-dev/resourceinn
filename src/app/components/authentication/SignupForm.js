@@ -7,7 +7,6 @@ import {
   Container,
   TextField,
   Typography,
-  Alert,
   Link,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
@@ -30,7 +29,7 @@ const SignupForm = () => {
       router.push("/login");
     },
     onError: (err) => {
-      setError(err.message || "Something went wrong");
+      console.error(err);
     },
   });
 
@@ -38,15 +37,19 @@ const SignupForm = () => {
     <Container maxWidth="sm">
       <Box
         sx={{
-          mt: 8,
+          mt: 10,
           p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: "white",
+          boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+          borderRadius: "16px",
+          backgroundColor: "#fff",
+          textAlign: "center",
         }}
       >
-        <Typography variant="h4" gutterBottom textAlign="center">
-          Sign Up
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
+          Create Account
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+          Join us and manage your resources effortlessly!
         </Typography>
         <Formik
           initialValues={{ firstName: "", lastName: "", email: "", password: "" }}
@@ -55,65 +58,124 @@ const SignupForm = () => {
             createMutation.mutate(values);
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, handleChange, handleBlur, values }) => (
             <Form>
-              <Field
-                as={TextField}
+              <TextField
                 label="First Name"
                 name="firstName"
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                value={values.firstName}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={touched.firstName && Boolean(errors.firstName)}
                 helperText={touched.firstName && errors.firstName}
+                sx={{ 
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "gray",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#007BFF",
+                    },
+                  },
+                }}
               />
-              <Field
-                as={TextField}
+              <TextField
                 label="Last Name"
                 name="lastName"
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                value={values.lastName}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={touched.lastName && Boolean(errors.lastName)}
                 helperText={touched.lastName && errors.lastName}
+                sx={{ 
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "gray",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#007BFF",
+                    },
+                  },
+                }}
               />
-              <Field
-                as={TextField}
+              <TextField
                 label="Email"
                 name="email"
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
+                sx={{ 
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "gray",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#007BFF",
+                    },
+                  },
+                }}
               />
-              <Field
-                as={TextField}
+              <TextField
                 label="Password"
                 type="password"
                 name="password"
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
+                sx={{ 
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "gray",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#007BFF",
+                    },
+                  },
+                }}
               />
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
                 fullWidth
-                sx={{ mt: 2 }}
+                sx={{
+                  mt: 3,
+                  py: 1.5,
+                  background: "linear-gradient(45deg, #007BFF, #00C6FF)",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  boxShadow: "0 4px 8px rgba(0, 123, 255, 0.4)",
+                  transition: "transform 0.3s",
+                  "&:hover": {
+                    background: "linear-gradient(45deg, #00C6FF, #007BFF)",
+                    transform: "scale(1.02)",
+                  },
+                }}
                 disabled={createMutation.isLoading}
               >
                 {createMutation.isLoading ? "Signing up..." : "Sign Up"}
               </Button>
-              <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
+              <Typography variant="body2" sx={{ mt: 2 }}>
                 Already have an account?{" "}
                 <Link
                   href="/login"
                   underline="hover"
-                  sx={{ cursor: "pointer", color: "blue" }}
+                  sx={{ cursor: "pointer", color: "#007BFF" }}
                 >
                   Login
                 </Link>

@@ -1,7 +1,8 @@
-import Login from "./login/page";
+import { Box } from "@mui/material";
+import AuthLayout from "./layouts/AuthLayout";
 
 export default function Home() {
   return (
-     <Login/>
+      <AuthLayout/>
   );
 }
