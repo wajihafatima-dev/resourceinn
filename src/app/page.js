@@ -1,8 +1,10 @@
-import { Box } from "@mui/material";
 import AuthLayout from "./layouts/AuthLayout";
+import LoginForm from "./components/authentication/LoginForm";
 
 export default function Home() {
   return (
-      <AuthLayout/>
+    <AuthLayout>
+    <LoginForm />
+  </AuthLayout>
   );
 }

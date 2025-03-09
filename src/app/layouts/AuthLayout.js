@@ -2,10 +2,9 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 import Image from "next/image";
-import Login from "../login/page";
-import Signup from "../signup/page";
 
-const AuthLayout = () => {
+
+const AuthLayout = ({children}) => {
   return (
     <Box
       sx={{
@@ -27,7 +26,7 @@ const AuthLayout = () => {
         p: 4,
       }}
     >
-    <Login/>
+    {children}
     </Box>
       <Box
         sx={{
