@@ -1,23 +1,27 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import {
   Box,
-  Button,
   Container,
   TextField,
   Typography,
-  Alert,
   Link,
 } from "@mui/material";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
 import { loginUser } from "@/apiServices";
 import { baseUrl, loginApi } from "@/apiEndPoints";
+import CustomButton from "../global/CustomButton";
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be 6 characters")
+    .required("Password is required"),
+});
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
 
   const createMutation = useMutation({
@@ -26,78 +30,113 @@ const LoginForm = () => {
       router.push("/dashboard");
     },
     onError: (err) => {
-      setError(err.message || "Something went wrong");
+      console.error(err);
     },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    createMutation.mutate({ email, password });
+  const handleSubmit = (values) => {
+    createMutation.mutate(values);
   };
 
   return (
     <Container maxWidth="sm">
       <Box
         sx={{
-          mt: 8,
-          p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: "white",
+          p: 8,
+          backgroundColor: "#fff",
         }}
       >
-        <Typography variant="h4" gutterBottom textAlign="center">
+        <Typography
+          variant="h4"
+          gutterBottom
+          textAlign="center"
+          sx={{ fontWeight: "bold", color: "#333" }}
+        >
           Login
         </Typography>
-        {error && <Alert severity="error">{error}</Alert>}
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-            disabled={createMutation.isLoading}
-          >
-            {createMutation.isLoading ? "Logging in..." : "Login"}
-          </Button>
-          <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
-            Don't have an account?{" "}
-            <Link
-              href="/signup"
-              underline="hover"
-              sx={{ cursor: "pointer", color: "blue" }}
-            >
-              Sign Up
-            </Link>
-          </Typography>
-        </form>
+        <Typography
+          variant="body1"
+          textAlign="center"
+          sx={{ color: "gray", mb: 3 }}
+        >
+          Enter your credentials to access your account
+        </Typography>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched, handleChange, handleBlur, values }) => (
+            <Form>
+              <TextField
+                label="Email"
+                name="email"
+                variant="standard"
+                fullWidth
+                margin="normal"
+                InputProps={{ disableUnderline: true }}
+                sx={{
+                  borderBottom: "2px solid #e0e0e0",
+                  "&:hover": {
+                    borderBottom: "2px solid #925FE2",
+                  },
+                }}
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+              />
+              <TextField
+                label="Password"
+                name="password"
+                type="password"
+                variant="standard"
+                fullWidth
+                margin="normal"
+                InputProps={{ disableUnderline: true }}
+                sx={{
+                  borderBottom: "2px solid #e0e0e0",
+                  "&:hover": {
+                    borderBottom: "2px solid #925FE2",
+                  },
+                }}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.password && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
+              />
+              <CustomButton
+                type="submit"
+                fullWidth
+                sx={{
+                  mt: 3,
+                  background: "linear-gradient(90deg, #925FE2, #7B3FE4)",
+                  color: "#fff",
+                  borderRadius: "30px",
+                  padding: "10px 0",
+                  "&:hover": {
+                    background: "linear-gradient(90deg, #7B3FE4, #925FE2)",
+                  },
+                }}
+                isLoading={createMutation.isLoading}
+              >
+                Login
+              </CustomButton>
+              <Typography variant="body2" textAlign="center" sx={{ mt: 2 ,color:"#000"}}>
+                Don't have an account?{" "}
+                <Link
+                  href="/signup"
+                  underline="hover"
+                  sx={{ cursor: "pointer", color: "#925FE2" }}
+                >
+                  Sign Up
+                </Link>
+              </Typography>
+            </Form>
+          )}
+        </Formik>
       </Box>
     </Container>
   );

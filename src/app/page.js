@@ -1,7 +1,10 @@
-import Login from "./login/page";
+import AuthLayout from "./layouts/AuthLayout";
+import LoginForm from "./components/authentication/LoginForm";
 
 export default function Home() {
   return (
-     <Login/>
+    <AuthLayout>
+    <LoginForm />
+  </AuthLayout>
   );
 }
