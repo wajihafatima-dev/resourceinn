@@ -1,191 +1,202 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import {
   Box,
-  Button,
   Container,
   TextField,
   Typography,
   Link,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { registerUser } from "@/apiServices";
 import { baseUrl, signupApi } from "@/apiEndPoints";
+import CustomButton from "../global/CustomButton";
+import CustomInput from "../global/CustomInput";
 
-const SignupSchema = Yup.object().shape({
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
+const SignUpSchema = Yup.object().shape({
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string().min(6, "Password must be 6 characters").required("Password is required"),
+  password: Yup.string()
+    .min(6, "Password must be 6 characters")
+    .required("Password is required"),
 });
 
-const SignupForm = () => {
+const SignUpForm = () => {
   const router = useRouter();
+  const [signupText, setSignupText] = useState("");
+  const fullText = "and join us";
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let typingSpeed = 150;
+    const handleTyping = () => {
+      setSignupText((currentText) => {
+        if (!isDeleting && currentText.length < fullText.length) {
+          return fullText.slice(0, currentText.length + 1);
+        } else if (isDeleting && currentText.length > 0) {
+          return fullText.slice(0, currentText.length - 1);
+        } else {
+          return currentText;
+        }
+      });
+      if (!isDeleting && signupText.length === fullText.length) {
+        setTimeout(() => setIsDeleting(true));
+      } else if (isDeleting && signupText.length === 0) {
+        setIsDeleting(false);
+      }
+    };
+    const timer = setTimeout(handleTyping, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [signupText, isDeleting]);
+
   const createMutation = useMutation({
     mutationFn: (data) => registerUser(baseUrl, signupApi, data),
     onSuccess: () => {
-      router.push("/login");
+      router.push("/dashboard");
     },
     onError: (err) => {
       console.error(err);
     },
   });
 
+  const handleSubmit = (values) => {
+    createMutation.mutate(values);
+  };
+
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box
         sx={{
-          mt: 10,
-          p: 4,
-          boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-          borderRadius: "16px",
-          backgroundColor: "#fff",
-          textAlign: "center",
+          mt: { xs: 3, sm: 3, md: 0 },
+          mb: 3,
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
-          Create Account
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          Join us and manage your resources effortlessly!
-        </Typography>
-        <Formik
-          initialValues={{ firstName: "", lastName: "", email: "", password: "" }}
-          validationSchema={SignupSchema}
-          onSubmit={(values) => {
-            createMutation.mutate(values);
+        <img src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} />
+      </Box>
+      <Box sx={{px: {xs:1,md:6}}}>
+        <Typography
+          variant="h5"
+          textAlign="left"
+          sx={{
+            fontWeight: "bold",
+            color: "#333",
+            minHeight: "50px",
+            width: "100%",
           }}
         >
-          {({ errors, touched, handleChange, handleBlur, values }) => (
-            <Form>
-              <TextField
-                label="First Name"
-                name="firstName"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={values.firstName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.firstName && Boolean(errors.firstName)}
-                helperText={touched.firstName && errors.firstName}
-                sx={{ 
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "gray",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#007BFF",
-                    },
-                  },
-                }}
-              />
-              <TextField
-                label="Last Name"
-                name="lastName"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={values.lastName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.lastName && Boolean(errors.lastName)}
-                helperText={touched.lastName && errors.lastName}
-                sx={{ 
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "gray",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#007BFF",
-                    },
-                  },
-                }}
-              />
-              <TextField
-                label="Email"
-                name="email"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.email && Boolean(errors.email)}
-                helperText={touched.email && errors.email}
-                sx={{ 
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "gray",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#007BFF",
-                    },
-                  },
-                }}
-              />
-              <TextField
-                label="Password"
-                type="password"
-                name="password"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.password && Boolean(errors.password)}
-                helperText={touched.password && errors.password}
-                sx={{ 
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "gray",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#007BFF",
-                    },
-                  },
-                }}
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  mt: 3,
-                  py: 1.5,
-                  background: "linear-gradient(45deg, #007BFF, #00C6FF)",
-                  color: "#fff",
-                  fontWeight: "bold",
-                  boxShadow: "0 4px 8px rgba(0, 123, 255, 0.4)",
-                  transition: "transform 0.3s",
-                  "&:hover": {
-                    background: "linear-gradient(45deg, #00C6FF, #007BFF)",
-                    transform: "scale(1.02)",
-                  },
-                }}
-                disabled={createMutation.isLoading}
-              >
-                {createMutation.isLoading ? "Signing up..." : "Sign Up"}
-              </Button>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                Already have an account?{" "}
-                <Link
-                  href="/login"
-                  underline="hover"
-                  sx={{ cursor: "pointer", color: "#007BFF" }}
-                >
-                  Login
-                </Link>
-              </Typography>
-            </Form>
+          Signup {signupText}
+          {signupText.length < fullText.length && (
+            <span style={{ color: "#925FE2" }}>|</span>
           )}
+        </Typography>
+
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+          }}
+          validationSchema={SignUpSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched, handleChange, handleBlur, values }) => {
+            const isFormValid =
+              values.firstName &&
+              values.lastName &&
+              values.email &&
+              values.password;
+            return (
+              <Form>
+                <CustomInput
+                  label="FirstName"
+                  name="firstName"
+                  value={values.firstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.firstName}
+                  errors={errors.firstName}
+                  sx={{ Padding: 0 }}
+                />
+                <CustomInput
+                  label="LastName"
+                  name="lastName"
+                  value={values.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.lastName}
+                  errors={errors.lastName}
+                  sx={{ Padding: 0 }}
+                />
+                <CustomInput
+                  label="Email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.email}
+                  errors={errors.email}
+                  sx={{ Padding: 0 }}
+                />
+                <CustomInput
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.password}
+                  errors={errors.password}
+                />
+                <CustomButton
+                  type="submit"
+                  disabled={!isFormValid}
+                  fullWidth
+                  sx={{
+                    mt: 3,
+                    background:
+                      "linear-gradient(90deg,rgb(40, 136, 160), #134552)",
+                    color: "#fff",
+                    borderRadius: "30px",
+                    padding: "10px 0",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(90deg, #134552, rgb(40, 136, 160))",
+                    },
+                  }}
+                  isLoading={createMutation.isLoading}
+                >
+                  Sign Up
+                </CustomButton>
+                <Typography
+                  variant="body2"
+                  textAlign="center"
+                  sx={{ mt: 2, color: "#000" }}
+                >
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    underline="hover"
+                    sx={{ color: "#925FE2", fontWeight: "bold" }}
+                  >
+                    Login
+                  </Link>
+                </Typography>
+              </Form>
+            );
+          }}
         </Formik>
       </Box>
     </Container>
   );
 };
 
-export default SignupForm;
+export default SignUpForm;
