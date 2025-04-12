@@ -1,28 +1,48 @@
-"use client";
+"use client"
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import {
-  Box,
-  Container,
-  TextField,
-  Typography,
-  Link,
-} from "@mui/material";
+import { Box, Container, Typography, Link, Checkbox, FormControlLabel, IconButton } from "@mui/material";
+import { Google, LinkedIn, Apple } from "@mui/icons-material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { loginUser } from "@/apiServices";
 import { baseUrl, loginApi } from "@/apiEndPoints";
 import CustomButton from "../global/CustomButton";
+import CustomInput from "../global/CustomInput";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be 6 characters")
-    .required("Password is required"),
+  password: Yup.string().min(6, "Password must be 6 characters").required("Password is required"),
 });
 
 const LoginForm = () => {
   const router = useRouter();
+  const [loginText, setLoginText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const fullText = "with your credentials";
+
+  useEffect(() => {
+    let typingSpeed = 150;
+    const handleTyping = () => {
+      setLoginText((currentText) => {
+        if (!isDeleting && currentText.length < fullText.length) {
+          return fullText.slice(0, currentText.length + 1);
+        } else if (isDeleting && currentText.length > 0) {
+          return fullText.slice(0, currentText.length - 1);
+        } else {
+          return currentText;
+        }
+      });
+      if (!isDeleting && loginText.length === fullText.length) {
+        setTimeout(() => setIsDeleting(true));
+      } else if (isDeleting && loginText.length === 0) {
+        setIsDeleting(false);
+      }
+    };
+    const timer = setTimeout(handleTyping, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [loginText, isDeleting]);
 
   const createMutation = useMutation({
     mutationFn: (data) => loginUser(baseUrl, loginApi, data),
@@ -39,103 +59,117 @@ const LoginForm = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          p: 8,
-          backgroundColor: "#fff",
-        }}
-      >
+    <Container maxWidth="md">
+      <Box sx={{mt:{xs:3,sm:3,md:0}, mb: 3, display: "flex", justifyContent: "center" }}>
+        <img src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} />
+      </Box>
+      <Box sx={{ px: {xs:1,md:6} }}>
         <Typography
-          variant="h4"
-          gutterBottom
-          textAlign="center"
-          sx={{ fontWeight: "bold", color: "#333" }}
+          variant="h5"
+          textAlign="left"
+          sx={{ fontWeight: "bold", color: "#333", width: "100%", mb:2 }}
         >
-          Login
+          Login {loginText}
+          <span
+            style={{
+              color: "#925FE2",
+              animation: "blink 1s step-start infinite",
+            }}
+          >
+            |
+          </span>
         </Typography>
-        <Typography
-          variant="body1"
-          textAlign="center"
-          sx={{ color: "gray", mb: 3 }}
-        >
-          Enter your credentials to access your account
-        </Typography>
+
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ email: "", password: "", rememberMe: false }}
           validationSchema={LoginSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, handleChange, handleBlur, values }) => (
-            <Form>
-              <TextField
-                label="Email"
-                name="email"
-                variant="standard"
-                fullWidth
-                margin="normal"
-                InputProps={{ disableUnderline: true }}
-                sx={{
-                  borderBottom: "2px solid #e0e0e0",
-                  "&:hover": {
-                    borderBottom: "2px solid #925FE2",
-                  },
-                }}
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.email && Boolean(errors.email)}
-                helperText={touched.email && errors.email}
-              />
-              <TextField
-                label="Password"
-                name="password"
-                type="password"
-                variant="standard"
-                fullWidth
-                margin="normal"
-                InputProps={{ disableUnderline: true }}
-                sx={{
-                  borderBottom: "2px solid #e0e0e0",
-                  "&:hover": {
-                    borderBottom: "2px solid #925FE2",
-                  },
-                }}
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.password && Boolean(errors.password)}
-                helperText={touched.password && errors.password}
-              />
-              <CustomButton
-                type="submit"
-                fullWidth
-                sx={{
-                  mt: 3,
-                  background: "linear-gradient(90deg, #925FE2, #7B3FE4)",
-                  color: "#fff",
-                  borderRadius: "30px",
-                  padding: "10px 0",
-                  "&:hover": {
-                    background: "linear-gradient(90deg, #7B3FE4, #925FE2)",
-                  },
-                }}
-                isLoading={createMutation.isLoading}
-              >
-                Login
-              </CustomButton>
-              <Typography variant="body2" textAlign="center" sx={{ mt: 2 ,color:"#000"}}>
-                Don't have an account?{" "}
-                <Link
-                  href="/signup"
-                  underline="hover"
-                  sx={{ cursor: "pointer", color: "#925FE2" }}
+          {({ errors, touched, handleChange, handleBlur, values }) => {
+            const isFormValid = values.email && values.password;
+
+            return (
+              <Form>
+                <CustomInput
+                  label="Email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.email}
+                  errors={errors.email}
+                  sx={{ Padding: 0 }}
+                />
+                <CustomInput
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.password}
+                  errors={errors.password}
+                />
+
+                <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mt: 1 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="rememberMe"
+                        checked={values.rememberMe}
+                        onChange={handleChange}
+                        color="default"
+                      />
+                    }
+                    label="Remember Me"
+                  />
+                  <Link href="/forgot-password" sx={{ color: "#925FE2", cursor: "pointer" }}>
+                    Forgot Password?
+                  </Link>
+                </Box>
+
+                <CustomButton
+                  type="submit"
+                  fullWidth
+                  disabled={!isFormValid} 
+                  sx={{
+                    mt: 3,
+                    background: "linear-gradient(90deg,rgb(40, 136, 160), #134552)",
+                    color: "#fff",
+                    borderRadius: "30px",
+                    padding: "10px 0",
+                    "&:hover": {
+                      background: "linear-gradient(90deg, #134552, rgb(40, 136, 160))",
+                    },
+                  }}
+                  isLoading={createMutation.isLoading}
                 >
-                  Sign Up
-                </Link>
-              </Typography>
-            </Form>
-          )}
+                  Login
+                </CustomButton>
+
+                <Box display="flex" justifyContent="center" gap={2} sx={{ mt: 3 }}>
+                  {[{ icon: <Google sx={{ fontSize: 40 }} />, href: "#" }, { icon: <LinkedIn sx={{ fontSize: 40 }} />, href: "#" }, { icon: <Apple sx={{ fontSize: 40 }} />, href: "#" }].map((item, index) => (
+                    <IconButton
+                      key={index}
+                      href={item.href}
+                      sx={{
+                        transition: "transform 0.3s ease",
+                        "&:hover": { transform: "scale(1.2)" },
+                      }}
+                    >
+                      {item.icon}
+                    </IconButton>
+                  ))}
+                </Box>
+                <Typography variant="body2" textAlign="center" sx={{ mt: 2, color: "#000" }}>
+                  Don't have an account?{" "}
+                  <Link href="/signup" underline="hover" sx={{ color: "#925FE2", fontWeight: "bold" }}>
+                    Sign Up
+                  </Link>
+                </Typography>
+              </Form>
+            );
+          }}
         </Formik>
       </Box>
     </Container>

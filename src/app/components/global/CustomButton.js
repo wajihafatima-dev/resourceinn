@@ -10,17 +10,31 @@ const CustomButton = ({
   onClick,
   isLoading = false,
   children,
-  sx,
+  sx = {},
 }) => {
+  const isBtnDisabled = disabled || isLoading;
+
   return (
     <Button
       type={type}
       variant={variant}
       color={color}
       fullWidth={fullWidth}
-      disabled={disabled || isLoading}
+      disabled={isBtnDisabled}
       onClick={onClick}
-      sx={sx}
+      sx={{
+        borderRadius: "30px",
+        padding: "10px 0",
+        ...sx,
+        ...(isBtnDisabled && {
+          background: "#f0f0f0",
+          color: "#aaa",
+          cursor: "not-allowed",
+          "&:hover": {
+            background: "#f0f0f0",
+          },
+        }),
+      }}
     >
       {isLoading ? "Loading..." : children}
     </Button>

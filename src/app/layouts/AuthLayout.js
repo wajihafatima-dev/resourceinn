@@ -1,68 +1,86 @@
-"use client"
+"use client";
 import React from "react";
-import { Box, Container, Typography } from "@mui/material";
-import Image from "next/image";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+import ImageSlider from "../components/global/ImageSlider";
 
+const AuthLayout = ({ children }) => {
+  const images = [
+    "/images/bg-1.png",
+    "/images/bg-3.png",
+    "/images/bg-2.png",
+  ];
 
-const AuthLayout = ({children}) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <Box
       sx={{
         display: "flex",
-        height: "97vh",
-        overflow: "hidden",
+        flexDirection: { xs: "column", md: "row" },
+        minHeight: "97vh",
         width: "100%",
+        margin:0,
+        overflow: "hidden",
+        backgroundColor: "red",
       }}
     >
-      <Box
-      sx={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#fff",
-        color: "#fff",
-        p: 4,
-      }}
-    >
-    {children}
-    </Box>
+      {/* Left Side */}
       <Box
         sx={{
           flex: 1,
           position: "relative",
-          backgroundImage: "url('/images/Vector (1).png')",
+          backgroundColor: "#134552",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundColor: "#925FE2",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          py: { xs: 4, md: 0 },
         }}
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "53%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
             color: "#fff",
-            width: "60%",
             textAlign: "center",
-            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
+            px: { xs: 2, sm: 4 ,md:0 },
           }}
         >
-          <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-            Welcome to ResourceInn Portal
+          <Typography
+            variant={isSmallScreen ? "h6" : "h5"}
+            sx={{ textShadow: "2px 2px 4px rgba(0,0,0,0.3)" , } }
+          >
+            The simplest way to manage your workforce
           </Typography>
-          <Box sx={{ mt: 2 }}>
-            <Image
-              src="/images/img (2).png" 
-              alt="Welcome"
-              width={430} 
-              height={430} 
-              style={{ borderRadius: "10px" }} 
+          <Typography variant="body1">
+            Enter your credentials to access your account
+          </Typography>
+          <Box sx={{mt:3}}>
+            <ImageSlider
+              images={images}
+              width={isSmallScreen ? 250 : 350}
+              height={isSmallScreen ? 200 : 300}
+              autoPlaySpeed={2000}
             />
           </Box>
         </Box>
+      </Box>
+
+      {/* Right Side (Form) */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f5f5f5",
+          color: "#333",
+          p: { xs: 0, sm: 4 },
+        }}
+      >
+        {children}
       </Box>
     </Box>
   );
