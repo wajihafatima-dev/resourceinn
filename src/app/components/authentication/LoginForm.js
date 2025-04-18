@@ -46,13 +46,17 @@ const LoginForm = () => {
 
   const createMutation = useMutation({
     mutationFn: (data) => loginUser(baseUrl, loginApi, data),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (response?.token) {
+        localStorage.setItem("token", response.token);
+      }
       router.push("/dashboard");
     },
     onError: (err) => {
       console.error(err);
     },
   });
+  
 
   const handleSubmit = (values) => {
     createMutation.mutate(values);
@@ -60,10 +64,10 @@ const LoginForm = () => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{mt:{xs:3,sm:3,md:0}, mb: 3, display: "flex", justifyContent: "center" }}>
+      <Box sx={{mt:0, mb: 3, display: "flex", justifyContent: "center" }}>
         <img src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} />
       </Box>
-      <Box sx={{ px: {xs:1,md:6} }}>
+      <Box sx={{ px: {xs:0,md:6} }}>
         <Typography
           variant="h5"
           textAlign="left"

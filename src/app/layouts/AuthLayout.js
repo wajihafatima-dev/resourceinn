@@ -18,7 +18,7 @@ const AuthLayout = ({ children }) => {
       sx={{
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
-        minHeight: "97vh",
+        minHeight: "100vh",
         width: "100%",
         margin:0,
         overflow: "hidden",
@@ -33,11 +33,11 @@ const AuthLayout = ({ children }) => {
           backgroundColor: "#134552",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          display: "flex",
+          display: {md:"flex",sm:"none",xs:"none"},
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          py: { xs: 4, md: 0 },
+          padding: { xs: 4, md: 0 },
         }}
       >
         <Box
@@ -77,7 +77,7 @@ const AuthLayout = ({ children }) => {
           justifyContent: "center",
           backgroundColor: "#f5f5f5",
           color: "#333",
-          p: { xs: 0, sm: 4 },
+          px: { md: 0, sm: 6 ,xs:5 },
         }}
       >
         {children}
