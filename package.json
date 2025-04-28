@@ -19,7 +19,7 @@
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.4.7",
     "formik": "^2.4.6",
-    "framer-motion": "^12.7.3",
+    "framer-motion": "^12.7.4",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
     "next": "15.1.7",
@@ -29,6 +29,7 @@
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.15",
+    "swiper": "^11.2.6",
     "yup": "^1.6.1"
   },
   "devDependencies": {

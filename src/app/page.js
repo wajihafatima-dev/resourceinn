@@ -1,7 +1,7 @@
-import Login from "./login/page";
+import Dashboard from "./dashboard/page";
 
-export default function Home() {
+export default function Home(children) {
   return (
-  <Login/>
+   <Dashboard/>
   );
 }
