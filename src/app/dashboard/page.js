@@ -1,28 +1,50 @@
-import React from 'react';
-import {
-  Box,
-  Container,
-  Stack,
-  Typography,
-} from '@mui/material';
-import MainCard from '../components/global/MainCard';
-import CardSlider from '../components/global/CardSlider';
-import DashboardLayout from '../layouts/DashboardLayout';
-
-const cardData = [
-  { id: 1, title: 'Card One', description: 1235 },
-  { id: 2, title: 'Card Two', description: 1235 },
-  { id: 3, title: 'Card Three', description: 1235},
-  { id: 4, title: 'Card Four', description: 1235 },
-  { id: 5, title: 'Card Five', description: 1235 },
-  { id: 6, title: 'Card Six', description: 1235},
-];
+"use client";
+import React, { useState, useEffect } from "react";
+import { Box } from "@mui/material";
+import AttendanceSummary from "../components/global/AttendanceSummary";
+import ClockWidget from "../components/global/ClockWidget";
+import { getApi } from "@/apiServices";
+import { baseUrl, cardApi } from "@/apiEndPoints";
+import { ATTENDANCE_SUMMARY_DATA, CLOCK_WIDGET_DATA } from "../constants/dashboardConstant";
+import Dropdown from "../components/global/Dropdown";
 
 const Dashboard = () => {
+  const [cardsData, setCardsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const fetchCardsData = await getApi(baseUrl, cardApi)(); // () at the end to call the async function
+        setCardsData(fetchCardsData);
+      } catch (error) {
+        console.error("Error fetching cards:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCards();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Container>
-      <MainCard children={<CardSlider cards={cardData} />}/>
-    </Container>
+    <Box
+      sx={{
+        ml: "85px",
+        display: "flex",
+        flexDirection: "column",
+        gap: { xs: 2, sm: 3, lg: 5 },
+      }}
+    >
+      <AttendanceSummary data={ATTENDANCE_SUMMARY_DATA} />
+      <ClockWidget data={CLOCK_WIDGET_DATA} />
+      {/* <AddCardForm/> */}
+      <Dropdown/>
+    </Box>
   );
 };
 
