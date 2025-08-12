@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
-import { Box, Typography } from "@mui/material";
 import CardSlider from "./CardSlider";
-
+import { Typography, Box } from "@mui/material";
 const AttendanceSummary = ({ 
   data = {}, 
   children 

@@ -16,6 +16,19 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [firstLetter, setFirstLetter] = React.useState("");
+
+  React.useEffect(() => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      if (userData?.firstName) {
+        setFirstLetter(userData.firstName.charAt(0).toUpperCase());
+      }
+    } catch (err) {
+      console.error("Error reading user from localStorage", err);
+    }
+  }, []);
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -25,20 +38,27 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="fixed"  sx={{backgroundColor:"#fff",border:"1.7px dashed lightgray",boxShadow:0}}>
+    <AppBar
+      position="fixed"
+      sx={{
+        backgroundColor: "#fff",
+        border: "1.7px dashed lightgray",
+        boxShadow: 0,
+      }}
+    >
       <Container maxWidth="2xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar>{firstLetter}</Avatar>
               </IconButton>
             </Tooltip>
 
             <Menu
               TransitionComponent={Slide}
-              TransitionProps={{ direction: "left" ,timeout:1000 }}
+              TransitionProps={{ direction: "left", timeout: 1000 }}
               sx={{ mt: "38px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}

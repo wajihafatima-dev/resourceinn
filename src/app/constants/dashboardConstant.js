@@ -15,6 +15,7 @@ export const ATTENDANCE_SUMMARY_DATA = {
       width: "100%",
       display: "flex",
       justifyContent: "center",
+      flexDirection:"column"
     },
     maincard: {
       width: "100%",

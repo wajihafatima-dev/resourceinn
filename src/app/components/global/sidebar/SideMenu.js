@@ -48,7 +48,7 @@ const SideMenu = ({ drawerOpen, setDrawerOpen }) => {
         <List>
           {currentTabs.map((btn) => (
             <ListItem
-              button
+              
               key={btn.text}
               onClick={() => handleNestedClick(btn.text, btn.href)}
               sx={{
@@ -98,9 +98,9 @@ const SideMenu = ({ drawerOpen, setDrawerOpen }) => {
         <List>
           {Tabs.map((btn) => (
             <ListItem
-              button
+             
               key={btn.text}
-              onClick={() => handleMainButtonClick(btn.text, btn.href)}
+              onClick={() => {handleMainButtonClick(btn.text, btn.href)}}
               sx={{
                 flexDirection: "column",
                 py: 2,

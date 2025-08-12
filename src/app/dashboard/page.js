@@ -1,12 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import AttendanceSummary from "../components/global/AttendanceSummary";
 import ClockWidget from "../components/global/ClockWidget";
 import { getApi } from "@/apiServices";
 import { baseUrl, cardApi } from "@/apiEndPoints";
 import { ATTENDANCE_SUMMARY_DATA, CLOCK_WIDGET_DATA } from "../constants/dashboardConstant";
-import Dropdown from "../components/global/Dropdown";
 
 const Dashboard = () => {
   const [cardsData, setCardsData] = useState([]);
@@ -15,10 +14,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const fetchCardsData = await getApi(baseUrl, cardApi)(); // () at the end to call the async function
+        const fetchCardsData = await getApi(baseUrl, cardApi)(); 
         setCardsData(fetchCardsData);
       } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error("Error fetching cards:");
       } finally {
         setLoading(false);
       }
@@ -28,7 +27,7 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Typography>Loading...</Typography>;
   }
 
   return (
@@ -43,7 +42,7 @@ const Dashboard = () => {
       <AttendanceSummary data={ATTENDANCE_SUMMARY_DATA} />
       <ClockWidget data={CLOCK_WIDGET_DATA} />
       {/* <AddCardForm/> */}
-      <Dropdown/>
+      {/* <Dropdown/> */}
     </Box>
   );
 };
