@@ -33,10 +33,10 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        ml: "85px",
+        ml:{xs: "0px",md:"240px"},
         display: "flex",
         flexDirection: "column",
-        gap: { xs: 2, sm: 3, lg: 5 },
+        gap: { xs: 5, sm: 3, lg: 5 },
       }}
     >
       <AttendanceSummary data={ATTENDANCE_SUMMARY_DATA} />

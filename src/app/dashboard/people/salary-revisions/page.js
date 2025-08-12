@@ -1,49 +1,61 @@
-'use client';
+"use client";
 
+import React from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import SectionLayout from "@/app/layouts/SectionLayout";
-import { Box, Card, CardContent, Typography, Divider } from "@mui/material";
 
-export default function SalaryRevisionsPage() {
-  // Example mock data - you can replace with API data
+export default function SalaryRevisions() {
   const salaryData = [
-    { year: "2023", oldSalary: "₹ 50,000", newSalary: "₹ 55,000", effectiveDate: "01-Jan-2023" },
-    { year: "2024", oldSalary: "₹ 55,000", newSalary: "₹ 60,000", effectiveDate: "01-Jan-2024" },
+    { id: 1, employee: "John Doe", oldSalary: 50000, newSalary: 55000, effectiveDate: "2025-01-01" },
+    { id: 2, employee: "Jane Smith", oldSalary: 60000, newSalary: 65000, effectiveDate: "2025-02-15" },
   ];
 
   return (
-    <SectionLayout
-      title="People - Salary Revisions"
-      description="Track and manage all salary revision history for employees."
-    >
-      <Box display="flex" flexDirection="column" gap={2}>
-        {salaryData.map((revision, index) => (
-          <Card
-            key={index}
-            sx={{
-              backgroundColor: "#f0f4f5",
-              borderRadius: 2,
-              overflow: "hidden",
-              borderLeft: "5px solid #134552",
-            }}
-          >
-            <CardContent>
-              <Typography variant="h6" sx={{ color: "#134552" }}>
-                {revision.year} Revision
-              </Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography variant="body2" sx={{ color: "#555" }}>
-                Old Salary: <strong>{revision.oldSalary}</strong>
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#555" }}>
-                New Salary: <strong>{revision.newSalary}</strong>
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#555" }}>
-                Effective Date: {revision.effectiveDate}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-    </SectionLayout>
+    <Box sx={{ p: 3 }}>
+      {/* Header */}
+        <SectionLayout
+              title="People - Salary Revisions"
+              description="View and manage leave encashment history and balances."
+            >
+        <Button variant="contained" startIcon={<AddIcon />} color="primary">
+          Add Revision
+        </Button>
+
+      {/* Table */}
+      <Paper elevation={3} sx={{ borderRadius: 2, overflow: "hidden" }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableCell><b>Employee</b></TableCell>
+              <TableCell><b>Old Salary</b></TableCell>
+              <TableCell><b>New Salary</b></TableCell>
+              <TableCell><b>Effective Date</b></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {salaryData.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{row.employee}</TableCell>
+                <TableCell>{row.oldSalary.toLocaleString()}</TableCell>
+                <TableCell>{row.newSalary.toLocaleString()}</TableCell>
+                <TableCell>{row.effectiveDate}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+      </SectionLayout>
+    </Box>
   );
 }

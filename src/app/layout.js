@@ -40,7 +40,6 @@ export default function RootLayout({ children }) {
                       component="main"
                       sx={{
                         flex: 1,
-                        mt: { xs: 7, sm: 8 },
                         p: 2,
                       }}
                     >

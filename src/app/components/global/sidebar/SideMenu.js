@@ -1,159 +1,97 @@
 "use client";
+
 import React, { useState } from "react";
 import {
-  Box,
   Drawer,
-  IconButton,
   List,
-  ListItem,
-  ListItemIcon,
+  ListItemButton,
   ListItemText,
-  Typography,
+  ListItemIcon,
+  Collapse,
+  Divider,
+  useMediaQuery,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { useTheme } from "@mui/material/styles";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useRouter } from "next/navigation";
-import { Tabs, Nasted_Tabs } from "../../../constants/SideMenuConstant";
+import { SIDEMENU_LINKS } from "@/app/constants/SideMenuConstant";
 
-const SideMenu = ({ drawerOpen, setDrawerOpen }) => {
-  const [selectedTab, setSelectedTab] = useState("");
-  const [selectedNestedTab, setSelectedNestedTab] = useState("");
+export default function SideMenu({ open, setOpen }) {
   const router = useRouter();
-  const handleMainButtonClick = (text, path) => {
-    setSelectedTab(text);
-    router.push(path);
-    setSelectedNestedTab("");
-    if (text !== "Dashboard") {
-      setDrawerOpen(true);
-    } else {
-      setDrawerOpen(false);
-    }
-  };
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleCloseDrawer = () => {
-    setDrawerOpen(false);
-    setSelectedNestedTab("");
-  };
-  const handleNestedClick = (text, path) => {
-    setSelectedNestedTab(text);
-    router.push(path);
-  };
+  // Store open states for each expandable menu
+  const [openMenus, setOpenMenus] = useState({});
 
-  const renderContent = () => {
-    const currentTabs = Nasted_Tabs[selectedTab] || [];
-    return (
-      <Box>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          {selectedTab}
-        </Typography>
-        <List>
-          {currentTabs.map((btn) => (
-            <ListItem
-              
-              key={btn.text}
-              onClick={() => handleNestedClick(btn.text, btn.href)}
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                px: 2,
-                py: 1,
-                bgcolor:
-                  selectedNestedTab === btn.text ? "#f0f0f0" : "transparent",
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: "auto", mr: 2 }}>
-                {btn.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={btn.text}
-                primaryTypographyProps={{
-                  fontSize: "14px",
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    );
+  const handleToggle = (menuText) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [menuText]: !prev[menuText],
+    }));
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      {/* Left Drawer */}
-      <Drawer
-        variant="permanent"
-        anchor="left"
-        sx={{
-          width: 80,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 80,
-            boxSizing: "border-box",
-            boxShadow:0,
-            zIndex: 1300,
-            borderRight:"1.8px dashed lightgray"
-          },
-        }}
-      >
-        <List>
-          {Tabs.map((btn) => (
-            <ListItem
-             
-              key={btn.text}
-              onClick={() => {handleMainButtonClick(btn.text, btn.href)}}
-              sx={{
-                flexDirection: "column",
-                py: 2,
-                color: selectedTab === btn.text ? "blue" : "#000",
+    <Drawer
+      variant={isMobile ? "temporary" : "permanent"}
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        "& .MuiDrawer-paper": {
+          width: 240,
+          mt: isMobile ? 0 : 8,
+        },
+      }}
+    >
+      <List>
+        {SIDEMENU_LINKS.map((item) => (
+          <React.Fragment key={item.text}>
+            {/* Parent Item */}
+            <ListItemButton
+              onClick={() => {
+                if (item.children) {
+                  handleToggle(item.text);
+                } else if (item.path || item.href) {
+                  router.push(item.path || item.href);
+                  if (isMobile) setOpen(false);
+                }
               }}
             >
-              <ListItemIcon sx={{ minWidth: "auto", mb: 1 }}>
-                {btn.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={btn.text}
-                primaryTypographyProps={{
-                  fontSize: "12px",
-                  textAlign: "center",
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+              {item.children &&
+                (openMenus[item.text] ? <ExpandLess /> : <ExpandMore />)}
+            </ListItemButton>
 
-      {/* Right Drawer for Nested Tabs */}
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={handleCloseDrawer}
-        ModalProps={{ hideBackdrop: true }}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 250,
-            padding: 2,
-            backgroundColor: "#fff",
-            position: "fixed",
-            left: 80,
-            top: 0,
-            height: "100%",
-            boxShadow: 0,
-            borderRight:"1.8px dashed lightgray"
-          },
-        }}
-      >
-        <IconButton
-          onClick={handleCloseDrawer}
-          sx={{ position: "absolute", top: 8, right: 8 }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        {/* Dynamic Nested Content */}
-        <Box sx={{ mt: 5 }}>{renderContent()}</Box>
-      </Drawer>
-    </Box>
+            {/* Nested Links */}
+            {item.children && (
+              <Collapse
+                in={openMenus[item.text]}
+                timeout="auto"
+                unmountOnExit
+              >
+                <List component="div" disablePadding>
+                  {item.children.map((child) => (
+                    <ListItemButton
+                      key={child.text}
+                      sx={{ pl: 4 }}
+                      onClick={() => {
+                        router.push(child.path || child.href);
+                        if (isMobile) setOpen(false);
+                      }}
+                    >
+                      <ListItemIcon>{child.icon}</ListItemIcon>
+                      <ListItemText primary={child.text} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </React.Fragment>
+        ))}
+      </List>
+      <Divider />
+    </Drawer>
   );
-};
-
-export default SideMenu;
+}

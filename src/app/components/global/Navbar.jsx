@@ -1,90 +1,117 @@
 "use client";
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import Slide from "@mui/material/Slide";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import React, { useState, useEffect } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
+  useMediaQuery,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useRouter } from "next/navigation";
+import ConfirmModal from "../ConfirmModal";
+import SideMenu from "./sidebar/SideMenu";
 
-function Navbar() {
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [firstLetter, setFirstLetter] = React.useState("");
+export default function Navbar() {
+  const router = useRouter();
+  const isMobile = useMediaQuery("(max-width:899px)");
+  const [anchorUserMenu, setAnchorUserMenu] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
 
-  React.useEffect(() => {
-    try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      if (userData?.firstName) {
-        setFirstLetter(userData.firstName.charAt(0).toUpperCase());
+  const [avatarLetter, setAvatarLetter] = useState("");
+
+  useEffect(() => {
+    // localStorage se user data read karna
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        if (user?.firstName) {
+          setAvatarLetter(user.firstName.charAt(0).toUpperCase());
+        }
+      } catch (err) {
+        console.error("Invalid user data in localStorage", err);
       }
-    } catch (err) {
-      console.error("Error reading user from localStorage", err);
     }
   }, []);
 
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  const handleUserMenuOpen = (e) => setAnchorUserMenu(e.currentTarget);
+  const handleUserMenuClose = () => setAnchorUserMenu(null);
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleLogout = () => {
+    setLogoutModal(false);
+    console.log("User logged out");
+    router.push("/login");
   };
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        backgroundColor: "#fff",
-        border: "1.7px dashed lightgray",
-        boxShadow: 0,
-      }}
-    >
-      <Container maxWidth="2xl">
-        <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>{firstLetter}</Avatar>
-              </IconButton>
-            </Tooltip>
-
-            <Menu
-              TransitionComponent={Slide}
-              TransitionProps={{ direction: "left", timeout: 1000 }}
-              sx={{ mt: "38px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+    <>
+      <AppBar position="fixed" sx={{ background: "#673ab7" }}>
+        <Toolbar>
+          {isMobile && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setDrawerOpen(true)}
+              sx={{ mr: 2 }}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+              <MenuIcon />
+            </IconButton>
+          )}
+
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            My Dashboard
+          </Typography>
+
+          <IconButton onClick={handleUserMenuOpen}>
+            <Avatar alt="Profile">{avatarLetter}</Avatar>
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorUserMenu}
+            open={Boolean(anchorUserMenu)}
+            onClose={handleUserMenuClose}
+          >
+            <MenuItem
+              onClick={() => {
+                handleUserMenuClose();
+                router.push("/dashboard/people/profile");
+              }}
+            >
+              Profile
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={() => {
+                handleUserMenuClose();
+                setLogoutModal(true);
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
-      </Container>
-    </AppBar>
+      </AppBar>
+
+      <Toolbar /> {/* spacing below fixed AppBar */}
+
+      {/* Drawer Menu */}
+      <SideMenu open={drawerOpen} setOpen={setDrawerOpen} isMobile={isMobile} />
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmModal
+        open={logoutModal}
+        onClose={() => setLogoutModal(false)}
+        title="Confirm Logout"
+        message="Are you sure you want to log out?"
+        onConfirm={handleLogout}
+      />
+    </>
   );
 }
-
-export default Navbar;
