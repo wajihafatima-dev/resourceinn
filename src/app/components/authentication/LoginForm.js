@@ -6,10 +6,11 @@ import { Box, Container, Typography, Link, Checkbox, FormControlLabel, IconButto
 import { Google, LinkedIn, Apple } from "@mui/icons-material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { loginUser } from "@/apiServices";
 import { baseUrl, loginApi } from "@/apiEndPoints";
 import CustomButton from "../global/CustomButton";
 import CustomInput from "../global/CustomInput";
+import { loginUser } from "@/apiServices";
+import Image from "next/image";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -46,24 +47,28 @@ const LoginForm = () => {
 
   const createMutation = useMutation({
     mutationFn: (data) => loginUser(baseUrl, loginApi, data),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (response?.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
       router.push("/dashboard");
     },
+    
     onError: (err) => {
       console.error(err);
     },
   });
-
+  
   const handleSubmit = (values) => {
     createMutation.mutate(values);
   };
 
   return (
     <Container maxWidth="md">
-      <Box sx={{mt:{xs:3,sm:3,md:0}, mb: 3, display: "flex", justifyContent: "center" }}>
-        <img src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} />
+      <Box sx={{mt:0, mb: 3, display: "flex", justifyContent: "center" }}>
+        <Image priority={false} src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} width={350}/>
       </Box>
-      <Box sx={{ px: {xs:1,md:6} }}>
+      <Box sx={{ px: {xs:0,md:6} }}>
         <Typography
           variant="h5"
           textAlign="left"
@@ -150,6 +155,7 @@ const LoginForm = () => {
                 <Box display="flex" justifyContent="center" gap={2} sx={{ mt: 3 }}>
                   {[{ icon: <Google sx={{ fontSize: 40 }} />, href: "#" }, { icon: <LinkedIn sx={{ fontSize: 40 }} />, href: "#" }, { icon: <Apple sx={{ fontSize: 40 }} />, href: "#" }].map((item, index) => (
                     <IconButton
+                      LinkComponent={"a"}
                       key={index}
                       href={item.href}
                       sx={{
