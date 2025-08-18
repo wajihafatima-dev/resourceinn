@@ -1,7 +1,7 @@
-export const getApi = (baseUrl, endPoint,pageNumber) => {
+export const getApi = (baseUrl, endPoint) => {
     return async () => {
       try {
-        const response = await fetch(`${baseUrl}${endPoint}?_start=${pageNumber}&_limit=4`);
+        const response = await fetch(`${baseUrl}${endPoint}`);
         if (!response.ok) {
           console.error(`HTTP Error: ${response.status}`);
         }

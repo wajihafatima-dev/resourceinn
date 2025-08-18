@@ -1,8 +1,16 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { Box, Container, Typography, Link, Checkbox, FormControlLabel, IconButton } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Link,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+} from "@mui/material";
 import { Google, LinkedIn, Apple } from "@mui/icons-material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -11,10 +19,13 @@ import CustomButton from "../global/CustomButton";
 import CustomInput from "../global/CustomInput";
 import { loginUser } from "@/apiServices";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string().min(6, "Password must be 6 characters").required("Password is required"),
+  password: Yup.string()
+    .min(6, "Password must be 6 characters")
+    .required("Password is required"),
 });
 
 const LoginForm = () => {
@@ -48,9 +59,10 @@ const LoginForm = () => {
   const createMutation = useMutation({
     mutationFn: (data) => loginUser(baseUrl, loginApi, data),
     onSuccess: (response) => {
-      if (response?.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
+      if (response?.token) {
+        Cookies.set("token", response.token, { expires: 7 }); 
       }
+      localStorage.setItem("user", JSON.stringify(response.user));
       router.push("/dashboard");
     },
     
@@ -65,14 +77,20 @@ const LoginForm = () => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{mt:0, mb: 3, display: "flex", justifyContent: "center" }}>
-        <Image priority={false} src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} width={350}/>
+      <Box sx={{ mt: 0, mb: 3, display: "flex", justifyContent: "center" }}>
+        <Image
+          priority={false}
+          src="/images/ResLogo.svg"
+          alt="ResourceINN Logo"
+          height={50}
+          width={350}
+        />
       </Box>
-      <Box sx={{ px: {xs:0,md:6} }}>
+      <Box sx={{ px: { xs: 0, md: 6 } }}>
         <Typography
           variant="h5"
           textAlign="left"
-          sx={{ fontWeight: "bold", color: "#333", width: "100%", mb:2 }}
+          sx={{ fontWeight: "bold", color: "#333", width: "100%", mb: 2 }}
         >
           Login {loginText}
           <span
@@ -116,7 +134,12 @@ const LoginForm = () => {
                   errors={errors.password}
                 />
 
-                <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mt: 1 }}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ mt: 1 }}
+                >
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -128,7 +151,10 @@ const LoginForm = () => {
                     }
                     label="Remember Me"
                   />
-                  <Link href="/forgot-password" sx={{ color: "#925FE2", cursor: "pointer" }}>
+                  <Link
+                    href="/forgot-password"
+                    sx={{ color: "#925FE2", cursor: "pointer" }}
+                  >
                     Forgot Password?
                   </Link>
                 </Box>
@@ -136,15 +162,17 @@ const LoginForm = () => {
                 <CustomButton
                   type="submit"
                   fullWidth
-                  disabled={!isFormValid} 
+                  disabled={!isFormValid}
                   sx={{
                     mt: 3,
-                    background: "linear-gradient(90deg,rgb(40, 136, 160), #134552)",
+                    background:
+                      "linear-gradient(90deg,rgb(40, 136, 160), #134552)",
                     color: "#fff",
                     borderRadius: "30px",
                     padding: "10px 0",
                     "&:hover": {
-                      background: "linear-gradient(90deg, #134552, rgb(40, 136, 160))",
+                      background:
+                        "linear-gradient(90deg, #134552, rgb(40, 136, 160))",
                     },
                   }}
                   isLoading={createMutation.isLoading}
@@ -152,8 +180,17 @@ const LoginForm = () => {
                   Login
                 </CustomButton>
 
-                <Box display="flex" justifyContent="center" gap={2} sx={{ mt: 3 }}>
-                  {[{ icon: <Google sx={{ fontSize: 40 }} />, href: "#" }, { icon: <LinkedIn sx={{ fontSize: 40 }} />, href: "#" }, { icon: <Apple sx={{ fontSize: 40 }} />, href: "#" }].map((item, index) => (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  gap={2}
+                  sx={{ mt: 3 }}
+                >
+                  {[
+                    { icon: <Google sx={{ fontSize: 40 }} />, href: "#" },
+                    { icon: <LinkedIn sx={{ fontSize: 40 }} />, href: "#" },
+                    { icon: <Apple sx={{ fontSize: 40 }} />, href: "#" },
+                  ].map((item, index) => (
                     <IconButton
                       LinkComponent={"a"}
                       key={index}
@@ -167,9 +204,17 @@ const LoginForm = () => {
                     </IconButton>
                   ))}
                 </Box>
-                <Typography variant="body2" textAlign="center" sx={{ mt: 2, color: "#000" }}>
+                <Typography
+                  variant="body2"
+                  textAlign="center"
+                  sx={{ mt: 2, color: "#000" }}
+                >
                   Don't have an account?{" "}
-                  <Link href="/signup" underline="hover" sx={{ color: "#925FE2", fontWeight: "bold" }}>
+                  <Link
+                    href="/signup"
+                    underline="hover"
+                    sx={{ color: "#925FE2", fontWeight: "bold" }}
+                  >
                     Sign Up
                   </Link>
                 </Typography>
