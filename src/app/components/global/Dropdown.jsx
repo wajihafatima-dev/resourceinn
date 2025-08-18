@@ -51,13 +51,26 @@ const Dropdown = () => {
           borderRadius: "12px",
           px: 2,
           py: 1,
+          width: "100%",
           fontWeight: 500,
           color: "#333",
         }}
       >
         {selected.label}
       </Button>
-      <Menu anchorEl={anchorEl} open={open} onClose={() => handleClose(null)}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => handleClose(null)}
+        anchorOrigin={{
+          vertical: "top", 
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
         {ranges.map((range, index) => (
           <MenuItem key={index} onClick={() => handleClose(range)}>
             {range.label}

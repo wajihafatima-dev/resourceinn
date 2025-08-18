@@ -16,6 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "../ConfirmModal";
 import SideMenu from "./sidebar/SideMenu";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
   const router = useRouter();
@@ -44,11 +45,12 @@ export default function Navbar() {
   const handleUserMenuOpen = (e) => setAnchorUserMenu(e.currentTarget);
   const handleUserMenuClose = () => setAnchorUserMenu(null);
 
-  const handleLogout = () => {
-    setLogoutModal(false);
-    console.log("User logged out");
-    router.push("/login");
-  };
+const handleLogout = () => {
+  setLogoutModal(false);
+  localStorage.removeItem("user");
+  Cookies.remove("token");
+  router.push("/login");
+};
 
   return (
     <>

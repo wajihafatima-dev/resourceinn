@@ -49,7 +49,7 @@ export const CLOCK_WIDGET_DATA = {
     mainBox: {
       width: "100%",
       display: "flex",
-      justifyContent: "right",
+      justifyContent: "left",
     },
     maincard: {
       width: "auto",

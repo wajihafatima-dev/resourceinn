@@ -28,20 +28,22 @@
 // }
 // app/api/cards/route.js (dummy API for testing only)
 
+import connectDB from "@/dbConfig/dbConfig";
 import { NextResponse } from "next/server";
+let cards= [
+    { id: 1, title: "Shifts", description: 1235 },
+    { id: 2, title: "Expected Minutes", description: 1235 },
+    { id: 3, title: "Worked Minutes", description: 1235 },
+    { id: 4, title: "Short Minutes", description: 1235 },
+    { id: 5, title: "Leaves", description: 1235 },
+    { id: 6, title: "Approved Overtime Minutes", description: 1235 },
+    { id: 6, title: "Overtime Minutes", description: 1235 },
+    { id: 6, title: "Early Arrival Minutes", description: 1235 },
+  ]
 
-// Fake in-memory store
-let cards = [
-  { id: "1", title: "Task A", description: 50 },
-  { id: "2", title: "Task B", description: 70 },
-];
-
-// GET
 export async function GET() {
   return NextResponse.json(cards, { status: 200 });
 }
-
-// POST
 export async function POST(req) {
   const body = await req.json();
   const newCard = {
@@ -52,8 +54,6 @@ export async function POST(req) {
   cards.push(newCard);
   return NextResponse.json(newCard, { status: 201 });
 }
-
-// DELETE
 export async function DELETE(req) {
   const { id } = await req.json();
   cards = cards.filter((card) => card.id !== id);
