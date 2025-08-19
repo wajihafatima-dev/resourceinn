@@ -21,8 +21,6 @@ export default function SideMenu({ open, setOpen }) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  // Store open states for each expandable menu
   const [openMenus, setOpenMenus] = useState({});
 
   const handleToggle = (menuText) => {

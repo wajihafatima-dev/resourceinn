@@ -59,11 +59,6 @@ export const SIDEMENU_LINKS = [
         icon: <EventNoteIcon />,
         href: "/dashboard/attendance/daily",
       },
-      {
-        text: "Monthly",
-        icon: <AccessTimeIcon />,
-        href: "/dashboard/attendance/monthly",
-      },
     ],
   },
 

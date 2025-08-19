@@ -17,6 +17,7 @@ import { registerUser } from "@/apiServices";
 import { baseUrl, signupApi } from "@/apiEndPoints";
 import CustomButton from "../global/CustomButton";
 import CustomInput from "../global/CustomInput";
+import Image from "next/image";
 
 const SignUpSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
@@ -71,33 +72,32 @@ const SignUpForm = () => {
 
   return (
     <Container maxWidth="md">
-      <Box
-        sx={{
-          mt: { xs: 3, sm: 3, md: 0 },
-          mb: 3,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <img src="/images/ResLogo.svg" alt="ResourceINN Logo" height={50} />
-      </Box>
-      <Box sx={{px: {xs:1,md:6}}}>
-        <Typography
-          variant="h5"
-          textAlign="left"
-          sx={{
-            fontWeight: "bold",
-            color: "#333",
-            minHeight: "50px",
-            width: "100%",
-          }}
-        >
-          Signup {signupText}
-          {signupText.length < fullText.length && (
-            <span style={{ color: "#925FE2" }}>|</span>
-          )}
-        </Typography>
-
+      <Box sx={{ px: { xs: 1, md: 6 } }}>
+        <Box sx={{ mt: 0, mb: 3, display: "flex", justifyContent: "center" }}>
+          <Image
+            priority={false}
+            src="/images/logo.png"
+            alt="Logo"
+            height={50}
+            width={50}
+          />
+          <Typography
+            variant="h5"
+            textAlign="left"
+            sx={{
+              fontWeight: "bold",
+              color: "#333",
+              minHeight: "50px",
+              width: "100%",
+               mt:1
+            }}
+          >
+            Signup {signupText}
+            {signupText.length < fullText.length && (
+              <span style={{ color: "#925FE2" }}>|</span>
+            )}
+          </Typography>
+        </Box>
         <Formik
           initialValues={{
             firstName: "",

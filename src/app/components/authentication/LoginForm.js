@@ -60,48 +60,48 @@ const LoginForm = () => {
     mutationFn: (data) => loginUser(baseUrl, loginApi, data),
     onSuccess: (response) => {
       if (response?.token) {
-        Cookies.set("token", response.token, { expires: 7 }); 
+        Cookies.set("token", response.token, { expires: 7 });
       }
       localStorage.setItem("user", JSON.stringify(response.user));
       router.push("/dashboard");
     },
-    
+
     onError: (err) => {
       console.error(err);
     },
   });
-  
+
   const handleSubmit = (values) => {
     createMutation.mutate(values);
   };
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 0, mb: 3, display: "flex", justifyContent: "center" }}>
-        <Image
-          priority={false}
-          src="/images/ResLogo.svg"
-          alt="ResourceINN Logo"
-          height={50}
-          width={350}
-        />
-      </Box>
       <Box sx={{ px: { xs: 0, md: 6 } }}>
-        <Typography
-          variant="h5"
-          textAlign="left"
-          sx={{ fontWeight: "bold", color: "#333", width: "100%", mb: 2 }}
-        >
-          Login {loginText}
-          <span
-            style={{
-              color: "#925FE2",
-              animation: "blink 1s step-start infinite",
-            }}
+        <Box sx={{ mt: 0, mb: 3, display: "flex", justifyContent: "center" }}>
+          <Image
+            priority={false}
+            src="/images/logo.png"
+            alt="Logo"
+            height={50}
+            width={50}
+          />
+          <Typography
+            variant="h5"
+            textAlign="left"
+            sx={{ fontWeight: "bold", color: "#333", width: "100%", mt:1 }}
           >
-            |
-          </span>
-        </Typography>
+            Login {loginText}
+            <span
+              style={{
+                color: "#925FE2",
+                animation: "blink 1s step-start infinite",
+              }}
+            >
+              |
+            </span>
+          </Typography>
+        </Box>
 
         <Formik
           initialValues={{ email: "", password: "", rememberMe: false }}

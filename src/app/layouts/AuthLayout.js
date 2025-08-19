@@ -4,7 +4,7 @@ import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import ImageSlider from "../components/global/ImageSlider";
 
 const AuthLayout = ({ children }) => {
-  const images = ["/images/bg-1.png", "/images/bg-3.png", "/images/bg-2.png"];
+  const images = ["/images/login1.png", "/images/login2.png", "/images/login3.png"];
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -21,7 +21,6 @@ const AuthLayout = ({ children }) => {
         backgroundColor: "red",
       }}
     >
-      {/* Left Side */}
       <Box
         sx={{
           flex: 1,
@@ -47,17 +46,18 @@ const AuthLayout = ({ children }) => {
             variant={isSmallScreen ? "h6" : "h5"}
             sx={{ textShadow: "2px 2px 4px rgba(0,0,0,0.3)" }}
           >
-            The simplest way to manage your workforce
+            Welcome back! Manage your workforce with ease
           </Typography>
           <Typography variant="body1">
-            Enter your credentials to access your account
+            Please sign in to continue to your account
           </Typography>
+
           <Box sx={{ mt: 3 }}>
             <ImageSlider
               images={images}
               width={isSmallScreen ? 300 : 350}
               height={isSmallScreen ? 300 : 300}
-              autoPlaySpeed={5000} 
+              autoPlaySpeed={5000}
             />
           </Box>
         </Box>

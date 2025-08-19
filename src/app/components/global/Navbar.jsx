@@ -28,7 +28,6 @@ export default function Navbar() {
   const [avatarLetter, setAvatarLetter] = useState("");
 
   useEffect(() => {
-    // localStorage se user data read karna
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -83,7 +82,7 @@ const handleLogout = () => {
             <MenuItem
               onClick={() => {
                 handleUserMenuClose();
-                router.push("/dashboard/people/profile");
+                router.push("/dashboard/profile");
               }}
             >
               Profile
@@ -101,12 +100,8 @@ const handleLogout = () => {
         </Toolbar>
       </AppBar>
 
-      <Toolbar /> {/* spacing below fixed AppBar */}
-
-      {/* Drawer Menu */}
+      <Toolbar /> 
       <SideMenu open={drawerOpen} setOpen={setDrawerOpen} isMobile={isMobile} />
-
-      {/* Logout Confirmation Modal */}
       <ConfirmModal
         open={logoutModal}
         onClose={() => setLogoutModal(false)}
