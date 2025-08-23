@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import { baseUrl, loginApi } from "@/apiEndPoints";
 import CustomButton from "../global/CustomButton";
 import CustomInput from "../global/CustomInput";
-import { loginUser } from "@/apiServices";
+import { loginUser, registerUser } from "@/apiServices";
 import Image from "next/image";
 import Cookies from "js-cookie";
 
@@ -57,7 +57,7 @@ const LoginForm = () => {
   }, [loginText, isDeleting]);
 
   const createMutation = useMutation({
-    mutationFn: (data) => loginUser(baseUrl, loginApi, data),
+    mutationFn: (data) => registerUser(baseUrl, loginApi, data),
     onSuccess: (response) => {
       if (response?.token) {
         Cookies.set("token", response.token, { expires: 7 });
