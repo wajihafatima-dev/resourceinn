@@ -79,13 +79,6 @@ const LoginForm = () => {
     <Container maxWidth="md">
       <Box sx={{ px: { xs: 0, md: 6 } }}>
         <Box sx={{ mt: 0, mb: 3, display: "flex", justifyContent: "center" }}>
-          <Image
-            priority={false}
-            src="/images/logo.png"
-            alt="Logo"
-            height={50}
-            width={50}
-          />
           <Typography
             variant="h5"
             textAlign="left"

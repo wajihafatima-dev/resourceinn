@@ -1,17 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Link,
-} from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 import HttpsTwoToneIcon from "@mui/icons-material/HttpsTwoTone";
 import CustomButton from "../components/global/CustomButton";
 import CustomInput from "../components/global/CustomInput";
 
 const ForgotPassword = () => {
   const [values, setValues] = useState({
-    username: '',
+    username: "",
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({
@@ -51,15 +47,16 @@ const ForgotPassword = () => {
     >
       <Box
         sx={{
-          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection:"column",
+          alignItems: "center",
+          height: "100vh", 
           width: { xs: "75%", sm: "55%", md: "40%" },
+          textAlign: "center",
         }}
       >
-        <Box sx={{ marginBottom: 6, mt: 9 }}>
-          <img src="/images/ResLogo.svg" alt="ResourceINN Logo" height={55} />
-        </Box>
-
-        <Box sx={{ color: "#925FE2", mb: 2 }}>
+        <Box sx={{ color: "#0d4b25ff", mb: 2 }}>
           <HttpsTwoToneIcon sx={{ fontSize: 40 }} />
         </Box>
 
@@ -72,8 +69,7 @@ const ForgotPassword = () => {
           color="text.secondary"
           sx={{ mt: 1, mb: 3 }}
         >
-          Please enter the username associated with your account, and we’ll
-          email you a link to reset your password.
+          Please enter the username to reset your password.
         </Typography>
 
         <Box
@@ -103,7 +99,8 @@ const ForgotPassword = () => {
               padding: "10px 0",
               marginBottom: 2,
               "&:hover": {
-                background: "linear-gradient(90deg, #134552, rgb(40, 136, 160))",
+                background:
+                  "linear-gradient(90deg, #134552, rgb(40, 136, 160))",
               },
             }}
           >
