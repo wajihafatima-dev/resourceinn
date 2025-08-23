@@ -59,7 +59,7 @@ const SignUpForm = () => {
   const createMutation = useMutation({
     mutationFn: (data) => registerUser(baseUrl, signupApi, data),
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push("/login");
     },
     onError: (err) => {
       console.error(err);

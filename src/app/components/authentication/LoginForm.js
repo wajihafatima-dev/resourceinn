@@ -208,8 +208,7 @@ const LoginForm = () => {
                   variant="body2"
                   textAlign="center"
                   sx={{ mt: 2, color: "#000" }}
-                >
-                  Don't have an account?{" "}
+                >Dont have an account?{" "}
                   <Link
                     href="/signup"
                     underline="hover"
