@@ -1,16 +1,16 @@
-import connectDB from '@/dbConfig/dbConfig';
-import User from '@/models/userModel';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { NextResponse } from 'next/server';
+import connectDB from "@/dbConfig/dbConfig";
+import User from "@/models/userModel";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const { email, password } = await req.json();
+    const { firstName, email, password } = await req.json();
 
-    if (!email || !password) {
+    if (!firstName || !email || !password) {
       return NextResponse.json(
-        { message: 'Email and password are required' },
+        { message: "Email and password are required" },
         { status: 400 }
       );
     }
@@ -20,7 +20,7 @@ export async function POST(req) {
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
-        { message: 'Invalid credentials' },
+        { message: "Invalid credentials" },
         { status: 400 }
       );
     }
@@ -28,20 +28,21 @@ export async function POST(req) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
-        { message: 'Invalid credentials' },
+        { message: "Invalid credentials" },
         { status: 400 }
       );
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
+      expiresIn: "1d",
     });
 
     const response = NextResponse.json(
       {
-        message: 'Login successful',
+        message: "Login successful",
         user: {
           _id: user._id,
+          firstName: user.firstName,
           email: user.email,
           name: user.name,
         },
@@ -49,17 +50,17 @@ export async function POST(req) {
       { status: 200 }
     );
 
-    response.cookies.set('token', token, {
+    response.cookies.set("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', 
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', 
-      path: '/',
-      maxAge: 24 * 60 * 60, 
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+      maxAge: 24 * 60 * 60,
     });
 
     return response;
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: 'Server error' }, { status: 500 });
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

@@ -17,8 +17,7 @@ import * as Yup from "yup";
 import { baseUrl, loginApi } from "@/apiEndPoints";
 import CustomButton from "../global/CustomButton";
 import CustomInput from "../global/CustomInput";
-import { loginUser, registerUser } from "@/apiServices";
-import Image from "next/image";
+import { loginUser } from "@/apiServices";
 import Cookies from "js-cookie";
 
 const LoginSchema = Yup.object().shape({
@@ -58,7 +57,7 @@ const LoginForm = () => {
 
  const createMutation = useMutation({
     mutationFn: (data) =>
-      registerUser(baseUrl, loginApi, data),
+      loginUser(baseUrl, loginApi, data),
     onSuccess: (response) => {
       if (response?.token) {
         Cookies.set("token", response.token, { expires: 7 }); 
@@ -102,10 +101,20 @@ const LoginForm = () => {
           onSubmit={handleSubmit}
         >
           {({ errors, touched, handleChange, handleBlur, values }) => {
-            const isFormValid = values.email && values.password;
+            const isFormValid =values.firstName && values.email && values.password;
 
             return (
               <Form>
+              <CustomInput
+                  label="Name"
+                  name="firstName"
+                  value={values.firstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  touched={touched.firstName}
+                  errors={errors.firstName}
+                  sx={{ Padding: 0 }}
+                />
                 <CustomInput
                   label="Email"
                   name="email"

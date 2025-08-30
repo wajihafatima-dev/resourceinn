@@ -137,7 +137,6 @@ export default function ProfilePage() {
               }}
             >
               {userData?.firstName || "First Name"}{" "}
-              {userData?.lastName || "Last Name"}
             </Typography>
             <Typography variant="body2" sx={{ color: "#555" }}>
               {userData?.email || "Email not set"}
@@ -152,13 +151,6 @@ export default function ProfilePage() {
               label="First Name"
               name="firstName"
               value={formValues.firstName}
-              onChange={handleChange}
-              fullWidth
-            />
-            <TextField
-              label="Last Name"
-              name="lastName"
-              value={formValues.lastName}
               onChange={handleChange}
               fullWidth
             />

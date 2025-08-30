@@ -16,7 +16,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "../ConfirmModal";
 import SideMenu from "./sidebar/SideMenu";
-import Cookies from "js-cookie";
 import { baseUrl, logoutApi } from "@/apiEndPoints";
 import { logoutUser } from "@/apiServices";
 
