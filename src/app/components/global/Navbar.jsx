@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "../ConfirmModal";
 import SideMenu from "./sidebar/SideMenu";
 import Cookies from "js-cookie";
+import { baseUrl, logoutApi } from "@/apiEndPoints";
+import { logoutUser } from "@/apiServices";
 
 export default function Navbar() {
   const router = useRouter();
@@ -44,12 +46,16 @@ export default function Navbar() {
   const handleUserMenuOpen = (e) => setAnchorUserMenu(e.currentTarget);
   const handleUserMenuClose = () => setAnchorUserMenu(null);
 
-const handleLogout = () => {
-  setLogoutModal(false);
-  localStorage.removeItem("user");
-  Cookies.remove("token");
-  router.push("/login");
-};
+  const handleLogout = async () => {
+    setLogoutModal(false);
+    localStorage.removeItem("user");
+    try {
+      await logoutUser(baseUrl, logoutApi);
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+    }
+  };
 
   return (
     <>
@@ -100,7 +106,7 @@ const handleLogout = () => {
         </Toolbar>
       </AppBar>
 
-      <Toolbar /> 
+      <Toolbar />
       <SideMenu open={drawerOpen} setOpen={setDrawerOpen} isMobile={isMobile} />
       <ConfirmModal
         open={logoutModal}

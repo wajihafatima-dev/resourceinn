@@ -56,18 +56,18 @@ const LoginForm = () => {
     return () => clearTimeout(timer);
   }, [loginText, isDeleting]);
 
-  const createMutation = useMutation({
-    mutationFn: (data) => registerUser(baseUrl, loginApi, data),
+ const createMutation = useMutation({
+    mutationFn: (data) =>
+      registerUser(baseUrl, loginApi, data),
     onSuccess: (response) => {
       if (response?.token) {
-        Cookies.set("token", response.token, { expires: 7 });
+        Cookies.set("token", response.token, { expires: 7 }); 
       }
-      localStorage.setItem("user", JSON.stringify(response.user));
-      router.push("/dashboard");
+      localStorage.setItem("user", JSON.stringify(response.user)); 
+      router.push("/dashboard"); 
     },
-
     onError: (err) => {
-      console.error(err);
+      console.error("Login failed:", err.message);
     },
   });
 
