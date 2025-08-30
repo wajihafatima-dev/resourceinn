@@ -1,5 +1,5 @@
-export const baseUrl = "http://localhost:3000/api";
-export const loginApi = "/login";
-export const signupApi = "/signup";
-export const cardApi = "/cards";
-export const logoutApi = "/logout";
+export const baseUrl = "https://resourceinn.vercel.app";
+export const loginApi = "/api/login";
+export const signupApi = "/api/signup";
+export const cardApi = "/api/cards";
+export const logoutApi = "/api/logout";
